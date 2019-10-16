@@ -1,9 +1,14 @@
 package com.hzhztech.koltlinim.ui.activity
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
 abstract class BaseActivity:AppCompatActivity() {
+
+    val progressDialog by lazy {
+        ProgressDialog(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,4 +22,12 @@ abstract class BaseActivity:AppCompatActivity() {
 
     //子类实现 返回布局资源的id
     abstract fun getLayoutResId(): Int
+
+    fun showProgress(message: String) {
+        progressDialog.setMessage(message)
+        progressDialog.show()
+    }
+    fun dismissProgress() {
+        progressDialog.dismiss()
+    }
 }
