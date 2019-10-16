@@ -1,5 +1,6 @@
 package com.hzhztech.koltlinim.presenter
 
+import com.hyphenate.chat.EMClient
 import com.hzhztech.koltlinim.contract.SplashContract
 
 class SplashPresenter(val view: SplashContract.View):SplashContract.Presenter {
@@ -7,5 +8,7 @@ class SplashPresenter(val view: SplashContract.View):SplashContract.Presenter {
         if(isLoggedIn()) view.onLoggedIn() else view.onNotLoggedIn()
     }
 
-    private fun isLoggedIn(): Boolean  = false
+    //是否登录到环信的服务器(环信服务器连接 并且已经登陆过)
+    private fun isLoggedIn(): Boolean  =
+            EMClient.getInstance().isConnected && EMClient.getInstance().isLoggedInBefore
 }
