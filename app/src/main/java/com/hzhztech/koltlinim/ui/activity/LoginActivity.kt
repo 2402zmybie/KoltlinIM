@@ -18,6 +18,7 @@ class LoginActivity: BaseActivity(),LoginContract.View {
 
     override fun init() {
         super.init()
+        newUser.setOnClickListener { startActivity<RegisterActivity>() }
         //1 登录按钮登录
         login.setOnClickListener { userLogin() }
         //密码编辑框 点击软键盘Enter也触发登录
