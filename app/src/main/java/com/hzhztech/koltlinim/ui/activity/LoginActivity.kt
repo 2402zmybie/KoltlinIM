@@ -1,5 +1,8 @@
 package com.hzhztech.koltlinim.ui.activity
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
 import android.view.KeyEvent
 import android.widget.TextView
 import com.hzhztech.koltlinim.R
@@ -25,9 +28,33 @@ class LoginActivity: BaseActivity(),LoginContract.View {
     }
 
     private fun userLogin() {
-        var userNameString = userName.text.toString().trim()
-        var passwordString = password.text.toString().trim()
-        presenter.login(userNameString,passwordString)
+        //隐藏软键盘
+        hideSoftKeyboard()
+        if(hasWriteExternalStoragePermission()) {
+            var userNameString = userName.text.toString().trim()
+            var passwordString = password.text.toString().trim()
+            presenter.login(userNameString,passwordString)
+        }else applyWriteExternalStoragePermission()
+
+    }
+
+    //申请写入的权限(会弹一个对话框,让用户选择, 后有一个回调)
+    private fun applyWriteExternalStoragePermission() {
+        var permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        ActivityCompat.requestPermissions(this,permissions,0)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            //用户同意权限,开始登录
+            userLogin()
+        }else toast(R.string.permission_denied)
+    }
+
+    //检查是否有写磁盘的操作  在android 6.0上面
+    private fun hasWriteExternalStoragePermission(): Boolean {
+        val result = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        return result == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onUserNameError() {
