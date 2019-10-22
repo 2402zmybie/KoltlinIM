@@ -61,6 +61,13 @@
             </intent-filter>
         </receiver>
 
+
+        <!--Bmob-->
+        <provider
+                android:name="cn.bmob.v3.util.BmobContentProvider"
+                android:authorities="com.hzhztech.koltlinim.BmobContentProvider">
+        </provider>
+
         <activity android:name=".ui.activity.LoginActivity"/>
         <activity android:name=".ui.activity.MainActivity"/>
         <activity android:name=".ui.activity.RegisterActivity"/>
