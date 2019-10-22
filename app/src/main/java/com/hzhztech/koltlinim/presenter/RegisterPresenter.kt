@@ -43,7 +43,8 @@ class RegisterPresenter(val view: RegisterContract.View):RegisterContract.Presen
                 }else {
                     //注册失败
                     LogUtils.e(p1.toString())
-                    view.onRegisterFailed()
+                    if(p1.errorCode == 202) view.onUserExist()
+                    else view.onRegisterFailed()
                 }
             }
 
