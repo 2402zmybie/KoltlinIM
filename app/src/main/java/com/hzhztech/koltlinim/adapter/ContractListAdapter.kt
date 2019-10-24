@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.hzhztech.koltlinim.data.ContactListItem
+import com.hzhztech.koltlinim.ui.activity.ChatActivity
 import com.hzhztech.koltlinim.widget.ContractListItemView
+import org.jetbrains.anko.startActivity
 
 class ContractListAdapter(val context: Context, val contactListItems: MutableList<ContactListItem>) :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -21,6 +23,9 @@ class ContractListAdapter(val context: Context, val contactListItems: MutableLis
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val contractListItemView = holder.itemView as ContractListItemView
         contractListItemView.bindView(contactListItems[position])
+        //点击联系人跳转到聊天界面
+        val userName = contactListItems.get(position).userName
+        contractListItemView.setOnClickListener { context.startActivity<ChatActivity>("username" to userName) }
     }
 
     class ContractListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
