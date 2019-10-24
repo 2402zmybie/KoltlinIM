@@ -17,6 +17,8 @@ class SlideBar(context: Context?, attrs: AttributeSet? = null) : View(context, a
 
     var paint = Paint()
 
+    var onSectionChangeListener: OnSectionChangeListener?  = null
+
     companion object {
         // 26个字母
         private val SECTIONS = arrayOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#")
@@ -59,15 +61,18 @@ class SlideBar(context: Context?, attrs: AttributeSet? = null) : View(context, a
                 //找到点击的字母
                 val index = getTouchIndex(event)
                 val firstLetter = SECTIONS[index]
-                println(firstLetter)
+                onSectionChangeListener?.onSectionChange(firstLetter)
             }
             MotionEvent.ACTION_MOVE -> {
                 //找到点击的字母
                 val index = getTouchIndex(event)
                 val firstLetter = SECTIONS[index]
-                println(firstLetter)
+                onSectionChangeListener?.onSectionChange(firstLetter)
             }
-            MotionEvent.ACTION_UP -> setBackgroundColor(Color.TRANSPARENT)
+            MotionEvent.ACTION_UP -> {
+                setBackgroundColor(Color.TRANSPARENT)
+                onSectionChangeListener?.onSlideFinish()
+            }
         }
         return true //消费事件
     }
@@ -81,5 +86,10 @@ class SlideBar(context: Context?, attrs: AttributeSet? = null) : View(context, a
             index = SECTIONS.size - 1
         }
         return index
+    }
+
+    interface OnSectionChangeListener {
+        fun onSectionChange(firstLetter:String)
+        fun onSlideFinish()  //滑动结束的回调
     }
 }

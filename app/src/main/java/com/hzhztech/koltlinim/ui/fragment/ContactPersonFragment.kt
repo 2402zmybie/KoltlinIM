@@ -9,6 +9,7 @@ import com.hzhztech.koltlinim.adapter.ContractListAdapter
 import com.hzhztech.koltlinim.adapter.EMContactListenerAdapter
 import com.hzhztech.koltlinim.contract.ContactContract
 import com.hzhztech.koltlinim.presenter.ContactPresenter
+import com.hzhztech.koltlinim.widget.SlideBar
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import kotlinx.android.synthetic.main.header.*
 import org.jetbrains.anko.support.v4.toast
@@ -43,6 +44,18 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
                 presenter.loadContracts()
             }
         })
+
+        slideBar.onSectionChangeListener = object :SlideBar.OnSectionChangeListener{
+            override fun onSectionChange(firstLetter: String) {
+                section.visibility = View.VISIBLE
+                section.text = firstLetter
+            }
+
+            override fun onSlideFinish() {
+                section.visibility = View.GONE
+            }
+
+        }
 
         presenter.loadContracts()
     }
