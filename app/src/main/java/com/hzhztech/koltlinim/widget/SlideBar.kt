@@ -2,8 +2,10 @@ package com.hzhztech.koltlinim.widget
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import com.hzhztech.koltlinim.R
 import org.jetbrains.anko.sp
@@ -11,6 +13,7 @@ import org.jetbrains.anko.sp
 class SlideBar(context: Context?, attrs: AttributeSet? = null) : View(context, attrs) {
 
     var sectionHeight = 0f
+    var textBaseLine = 0f
 
     var paint = Paint()
 
@@ -31,15 +34,29 @@ class SlideBar(context: Context?, attrs: AttributeSet? = null) : View(context, a
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         //计算每个字符分配的高度
         sectionHeight = h * 1.0f / SECTIONS.size
+        val fontMetrics = paint.fontMetrics
+        //计算绘制文本的高度
+        val textHeight = fontMetrics.descent - fontMetrics.ascent
+        //计算基准线
+        textBaseLine = sectionHeight /2 + (textHeight / 2 - fontMetrics.descent)
+
     }
 
     override fun onDraw(canvas: Canvas) {
         var x = width * 1.0f/ 2
-        var y = sectionHeight
+        var baseline = textBaseLine
         SECTIONS.forEach {
-            canvas.drawText(it,x,y,paint)
+            canvas.drawText(it,x,baseline,paint)
             //更新Y 绘制下一个字母
-            y += sectionHeight
+            baseline += sectionHeight
         }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when(event.action) {
+            MotionEvent.ACTION_DOWN -> setBackgroundResource(R.drawable.bg_slide_bar)
+            MotionEvent.ACTION_UP -> setBackgroundColor(Color.TRANSPARENT)
+        }
+        return true //消费事件
     }
 }

@@ -27,7 +27,6 @@
             android:id="@+id/slideBar"
             android:layout_width="20dp"
             android:layout_height="match_parent"
-            android:background="#ff0000"
             android:layout_gravity="right"/>
 
         <TextView
