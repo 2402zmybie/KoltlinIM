@@ -30,7 +30,7 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter = ContractListAdapter(context)
+            adapter = ContractListAdapter(context,presenter.contactListItems)
         }
 
         presenter.loadContracts()
