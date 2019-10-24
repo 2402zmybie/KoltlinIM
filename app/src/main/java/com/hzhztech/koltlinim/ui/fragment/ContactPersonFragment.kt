@@ -2,8 +2,11 @@ package com.hzhztech.koltlinim.ui.fragment
 
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import com.hyphenate.EMContactListener
+import com.hyphenate.chat.EMClient
 import com.hzhztech.koltlinim.R
 import com.hzhztech.koltlinim.adapter.ContractListAdapter
+import com.hzhztech.koltlinim.adapter.EMContactListenerAdapter
 import com.hzhztech.koltlinim.contract.ContactContract
 import com.hzhztech.koltlinim.presenter.ContactPresenter
 import kotlinx.android.synthetic.main.fragment_contacts.*
@@ -32,6 +35,14 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
             layoutManager = LinearLayoutManager(context)
             adapter = ContractListAdapter(context,presenter.contactListItems)
         }
+
+        EMClient.getInstance().contactManager().setContactListener(object : EMContactListenerAdapter() {
+            override fun onContactDeleted(p0: String?) {
+                //好友被删除
+                //重新获取联系人数据
+                presenter.loadContracts()
+            }
+        })
 
         presenter.loadContracts()
     }

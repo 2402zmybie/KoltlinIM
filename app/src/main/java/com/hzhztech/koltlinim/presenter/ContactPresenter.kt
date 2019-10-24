@@ -15,6 +15,8 @@ class ContactPresenter(val view:ContactContract.View) :ContactContract.Presenter
 
     override fun loadContracts() {
         doAsync {
+            //再次加载数据 清空集合
+            contactListItems.clear()
             try {
                 //由于环信是同步的方法, 所以放在doAsync中, 然后用anko库的uiThread 通知View层
                 val usernames = EMClient.getInstance().contactManager().allContactsFromServer

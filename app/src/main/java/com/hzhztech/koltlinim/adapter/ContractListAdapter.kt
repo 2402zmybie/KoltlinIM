@@ -6,11 +6,14 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import com.hyphenate.chat.EMClient
 import com.hzhztech.koltlinim.R
 import com.hzhztech.koltlinim.data.ContactListItem
 import com.hzhztech.koltlinim.ui.activity.ChatActivity
 import com.hzhztech.koltlinim.widget.ContractListItemView
+import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 class ContractListAdapter(val context: Context, val contactListItems: MutableList<ContactListItem>) :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -44,7 +47,20 @@ class ContractListAdapter(val context: Context, val contactListItems: MutableLis
     }
 
     private fun deleteFriend(userName: String) {
+        //异步删除好友
+        EMClient.getInstance().contactManager().aysncDeleteContact(userName, object :EMCallBackAdapter() {
+            override fun onSuccess() {
+                context.runOnUiThread {
+                    toast(R.string.delete_friend_success)
+                }
+            }
 
+            override fun onError(p0: Int, p1: String?) {
+                context.runOnUiThread {
+                    toast(R.string.delete_friend_failed)
+                }
+            }
+        })
     }
 
     class ContractListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
