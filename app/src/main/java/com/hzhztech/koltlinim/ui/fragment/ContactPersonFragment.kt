@@ -1,7 +1,9 @@
 package com.hzhztech.koltlinim.ui.fragment
 
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.hzhztech.koltlinim.R
+import com.hzhztech.koltlinim.adapter.ContractListAdapter
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import kotlinx.android.synthetic.main.header.*
 
@@ -16,6 +18,12 @@ class ContactPersonFragment :BaseFragment() {
         swipeRefreshLayout.apply {
             setColorSchemeResources(R.color.colorPrimary)
             isRefreshing = true
+        }
+
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = ContractListAdapter(context)
         }
     }
 }
