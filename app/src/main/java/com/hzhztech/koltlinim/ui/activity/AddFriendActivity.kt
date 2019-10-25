@@ -1,8 +1,6 @@
 package com.hzhztech.koltlinim.ui.activity
 
 import android.support.v7.widget.LinearLayoutManager
-import android.view.KeyEvent
-import android.widget.TextView
 import com.hzhztech.koltlinim.R
 import com.hzhztech.koltlinim.adapter.AddFriendListAdapter
 import com.hzhztech.koltlinim.contract.AddFriendContract
@@ -34,7 +32,7 @@ class AddFriendActivity :BaseActivity() ,AddFriendContract.View{
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter = AddFriendListAdapter(context)
+            adapter = AddFriendListAdapter(context,presenter.addFriendItems)
         }
 
         search.setOnClickListener { search() }
