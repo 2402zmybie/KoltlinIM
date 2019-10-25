@@ -9,9 +9,11 @@ import com.hzhztech.koltlinim.adapter.ContractListAdapter
 import com.hzhztech.koltlinim.adapter.EMContactListenerAdapter
 import com.hzhztech.koltlinim.contract.ContactContract
 import com.hzhztech.koltlinim.presenter.ContactPresenter
+import com.hzhztech.koltlinim.ui.activity.AddFriendActivity
 import com.hzhztech.koltlinim.widget.SlideBar
 import kotlinx.android.synthetic.main.fragment_contacts.*
 import kotlinx.android.synthetic.main.header.*
+import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 
 class ContactPersonFragment :BaseFragment(),ContactContract.View {
@@ -24,6 +26,7 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
         super.init()
         headerTitle.text = getString(R.string.contact)
         add.visibility = View.VISIBLE
+        add.setOnClickListener { startActivity<AddFriendActivity>() }
 
         swipeRefreshLayout.apply {
             setColorSchemeResources(R.color.colorPrimary)
@@ -49,6 +52,7 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
             override fun onSectionChange(firstLetter: String) {
                 section.visibility = View.VISIBLE
                 section.text = firstLetter
+                recyclerView.smoothScrollToPosition(getPosition(firstLetter))
             }
 
             override fun onSlideFinish() {
@@ -60,13 +64,23 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
         presenter.loadContracts()
     }
 
+
+    private fun getPosition(firstLetter: String): Int =
+        presenter.contactListItems.binarySearch {
+            contactListItem -> contactListItem.firstLetter.minus(firstLetter[0])
+        }
+
     override fun onLoadContractSuccess() {
-        swipeRefreshLayout.isRefreshing = false
+        if(swipeRefreshLayout != null) {
+            swipeRefreshLayout.isRefreshing = false
+        }
         recyclerView.adapter!!.notifyDataSetChanged()
     }
 
     override fun onLoadContractsFailed() {
-        swipeRefreshLayout.isRefreshing = false
+        if(swipeRefreshLayout != null) {
+            swipeRefreshLayout.isRefreshing = false
+        }
         toast(R.string.load_contacts_failed)
     }
 }
