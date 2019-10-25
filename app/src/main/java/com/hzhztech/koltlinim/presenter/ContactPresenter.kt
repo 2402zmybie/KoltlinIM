@@ -5,6 +5,8 @@ import com.hzhztech.koltlinim.contract.ContactContract
 import com.hyphenate.chat.EMClient
 import com.hyphenate.exceptions.HyphenateException
 import com.hzhztech.koltlinim.data.ContactListItem
+import com.hzhztech.koltlinim.data.db.Contact
+import com.hzhztech.koltlinim.data.db.IMDatabase
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -17,6 +19,8 @@ class ContactPresenter(val view:ContactContract.View) :ContactContract.Presenter
         doAsync {
             //再次加载数据 清空集合
             contactListItems.clear()
+            //清空数据库
+            IMDatabase.instance.deleteAllContacts()
             try {
                 //由于环信是同步的方法, 所以放在doAsync中, 然后用anko库的uiThread 通知View层
                 val usernames = EMClient.getInstance().contactManager().allContactsFromServer
@@ -27,6 +31,10 @@ class ContactPresenter(val view:ContactContract.View) :ContactContract.Presenter
                     val showFirstLetter = index == 0 || s[0] != usernames[index - 1][0]
                     val contactListItem = ContactListItem(s,s[0].toUpperCase(),showFirstLetter)
                     contactListItems.add(contactListItem)
+
+                    //创建联系人保存到数据库
+                    val contact = Contact(mutableMapOf("name" to s))
+                    IMDatabase.instance.saveContact(contact)
                 }
                 LogUtils.e(EMClient.getInstance().currentUser + "好友数量------" + usernames.size)
                 uiThread {
