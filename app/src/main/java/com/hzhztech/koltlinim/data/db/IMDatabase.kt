@@ -28,4 +28,11 @@ class IMDatabase  {
             })
         }
     }
+
+    fun deleteAllContacts() {
+        databaseHelper.use {
+            //全部删除
+            delete(ContactTable.NAME,null,null)
+        }
+    }
 }
