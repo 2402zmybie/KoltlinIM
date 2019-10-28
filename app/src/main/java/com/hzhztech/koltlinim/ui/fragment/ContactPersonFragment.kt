@@ -22,39 +22,33 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
 
     override fun getLayoutResId(): Int  = R.layout.fragment_contacts
 
+    var contactListener = object : EMContactListenerAdapter() {
+        override fun onContactDeleted(p0: String?) {
+            //好友被删除
+            //重新获取联系人数据
+            presenter.loadContracts()
+        }
+
+        override fun onContactAdded(p0: String?) {
+            //新增好友
+            //重新获取联系人数据
+            presenter.loadContracts()
+        }
+    }
+
     override fun init() {
         super.init()
-        headerTitle.text = getString(R.string.contact)
-        add.visibility = View.VISIBLE
-        add.setOnClickListener { startActivity<AddFriendActivity>() }
 
-        swipeRefreshLayout.apply {
-            setColorSchemeResources(R.color.colorPrimary)
-            isRefreshing = true
-            setOnRefreshListener { presenter.loadContracts() }
-        }
+        initHeader()
+        initSwipeRefreshLayout()
+        initRecyclerView()
+        EMClient.getInstance().contactManager().setContactListener(contactListener)
+        initSlideBar()
+        presenter.loadContracts()
+    }
 
-        recyclerView.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
-            adapter = ContractListAdapter(context,presenter.contactListItems)
-        }
-
-        EMClient.getInstance().contactManager().setContactListener(object : EMContactListenerAdapter() {
-            override fun onContactDeleted(p0: String?) {
-                //好友被删除
-                //重新获取联系人数据
-                presenter.loadContracts()
-            }
-
-            override fun onContactAdded(p0: String?) {
-                //新增好友
-                //重新获取联系人数据
-                presenter.loadContracts()
-            }
-        })
-
-        slideBar.onSectionChangeListener = object :SlideBar.OnSectionChangeListener{
+    private fun initSlideBar() {
+        slideBar.onSectionChangeListener = object : SlideBar.OnSectionChangeListener {
             override fun onSectionChange(firstLetter: String) {
                 section.visibility = View.VISIBLE
                 section.text = firstLetter
@@ -66,8 +60,29 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
             }
 
         }
+    }
 
-        presenter.loadContracts()
+    private fun initRecyclerView() {
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = ContractListAdapter(context, presenter.contactListItems)
+        }
+    }
+
+    private fun initSwipeRefreshLayout() {
+        swipeRefreshLayout.apply {
+            setColorSchemeResources(R.color.colorPrimary)
+            isRefreshing = true
+            setOnRefreshListener { presenter.loadContracts() }
+        }
+    }
+
+    //抽取方法快捷键 ctrl + ale + M
+    private fun initHeader() {
+        headerTitle.text = getString(R.string.contact)
+        add.visibility = View.VISIBLE
+        add.setOnClickListener { startActivity<AddFriendActivity>() }
     }
 
 
@@ -88,5 +103,10 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
             swipeRefreshLayout.isRefreshing = false
         }
         toast(R.string.load_contacts_failed)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EMClient.getInstance().contactManager().removeContactListener(contactListener)
     }
 }
