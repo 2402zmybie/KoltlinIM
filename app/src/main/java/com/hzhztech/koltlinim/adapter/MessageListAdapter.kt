@@ -38,6 +38,9 @@ class MessageListAdapter(val context:Context, val messages:List<EMMessage>) : Re
         if(getItemViewType(p1) == ITEM_TYPE_SEND_MESSAGE) {
             val sendMessageItemView = viewHolder.itemView as SendMessageItemView
             sendMessageItemView.bindView(messages[p1])
+        }else {
+            val receiveMessageItemView = viewHolder.itemView as ReceiveMessageItemView
+            receiveMessageItemView.bindView(messages[p1])
         }
     }
 
