@@ -34,8 +34,11 @@ class MessageListAdapter(val context:Context, val messages:List<EMMessage>) : Re
 
     override fun getItemCount(): Int  = messages.size
 
-    override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
-
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, p1: Int) {
+        if(getItemViewType(p1) == ITEM_TYPE_SEND_MESSAGE) {
+            val sendMessageItemView = viewHolder.itemView as SendMessageItemView
+            sendMessageItemView.bindView(messages[p1])
+        }
     }
 
     class SendMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

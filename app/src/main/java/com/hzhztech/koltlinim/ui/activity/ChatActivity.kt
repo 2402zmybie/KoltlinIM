@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.header.*
 import org.jetbrains.anko.toast
 
-class ChatActixvity :BaseActivity(),ChatContract.View {
+class ChatActivity :BaseActivity(),ChatContract.View {
 
     lateinit var username:String
     val presenter = ChatPresenter(this)
