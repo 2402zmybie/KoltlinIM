@@ -1,11 +1,13 @@
 package com.hzhztech.koltlinim.ui.activity
 
+import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
 import com.hzhztech.koltlinim.R
+import com.hzhztech.koltlinim.adapter.MessageListAdapter
 import com.hzhztech.koltlinim.contract.ChatContract
 import com.hzhztech.koltlinim.presenter.ChatPresenter
 import kotlinx.android.synthetic.main.activity_chat.*
@@ -23,7 +25,16 @@ class ChatActixvity :BaseActivity(),ChatContract.View {
         super.init()
         initHeader()
         initEditText()
+        initRecyclerView()
         send.setOnClickListener { send() }
+    }
+
+    private fun initRecyclerView() {
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = MessageListAdapter(context,presenter.messages)
+        }
     }
 
     private fun send() {
