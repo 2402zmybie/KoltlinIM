@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.hyphenate.chat.EMMessage
+import com.hyphenate.util.DateUtils
 import com.hzhztech.koltlinim.widget.ReceiveMessageItemView
 import com.hzhztech.koltlinim.widget.SendMessageItemView
 
@@ -35,13 +36,23 @@ class MessageListAdapter(val context:Context, val messages:List<EMMessage>) : Re
     override fun getItemCount(): Int  = messages.size
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, p1: Int) {
+        val showTimeStamp = isShowTimeStamp(p1)
         if(getItemViewType(p1) == ITEM_TYPE_SEND_MESSAGE) {
             val sendMessageItemView = viewHolder.itemView as SendMessageItemView
-            sendMessageItemView.bindView(messages[p1])
+            sendMessageItemView.bindView(messages[p1], showTimeStamp)
         }else {
             val receiveMessageItemView = viewHolder.itemView as ReceiveMessageItemView
-            receiveMessageItemView.bindView(messages[p1])
+            receiveMessageItemView.bindView(messages[p1], showTimeStamp)
         }
+    }
+
+    private fun isShowTimeStamp(position: Int): Boolean {
+        //如果是第一条消息或者和前一条消息间隔的时间比较长 显示时间戳
+        var showTimeStamp = true
+        if(position > 0) {
+            showTimeStamp = !DateUtils.isCloseEnough(messages[position].msgTime, messages[position - 1].msgTime)
+        }
+        return showTimeStamp
     }
 
     class SendMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
