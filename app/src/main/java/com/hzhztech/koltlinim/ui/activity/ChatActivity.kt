@@ -6,18 +6,32 @@ import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
+import com.hyphenate.EMMessageListener
+import com.hyphenate.chat.EMClient
+import com.hyphenate.chat.EMMessage
 import com.hzhztech.koltlinim.R
+import com.hzhztech.koltlinim.adapter.EMMessageListenerAdapter
 import com.hzhztech.koltlinim.adapter.MessageListAdapter
 import com.hzhztech.koltlinim.contract.ChatContract
 import com.hzhztech.koltlinim.presenter.ChatPresenter
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.header.*
+import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.toast
 
 class ChatActivity :BaseActivity(),ChatContract.View {
 
     lateinit var username:String
     val presenter = ChatPresenter(this)
+
+    val messageListener = object : EMMessageListenerAdapter() {
+        override fun onMessageReceived(p0: MutableList<EMMessage>?) {
+            presenter.addMessage(username,p0)
+            runOnUiThread {
+                recyclerView.adapter!!.notifyDataSetChanged()
+            }
+        }
+    }
 
     override fun getLayoutResId(): Int  = R.layout.activity_chat
 
@@ -26,6 +40,7 @@ class ChatActivity :BaseActivity(),ChatContract.View {
         initHeader()
         initEditText()
         initRecyclerView()
+        EMClient.getInstance().chatManager().addMessageListener(messageListener)
         send.setOnClickListener { send() }
     }
 
@@ -88,6 +103,11 @@ class ChatActivity :BaseActivity(),ChatContract.View {
     override fun onSendMessageFailed() {
         toast(getString(R.string.send_message_failed))
         recyclerView.adapter!!.notifyDataSetChanged()   //消息状态图片变为出错的
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EMClient.getInstance().chatManager().removeMessageListener(messageListener)
     }
 
 }
