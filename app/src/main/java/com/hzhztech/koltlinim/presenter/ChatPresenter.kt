@@ -4,8 +4,10 @@ import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMMessage
 import com.hzhztech.koltlinim.adapter.EMCallBackAdapter
 import com.hzhztech.koltlinim.contract.ChatContract
+import org.jetbrains.anko.doAsync
 
 class ChatPresenter(val view:ChatContract.View) :ChatContract.Presenter{
+
 
     val messages = mutableListOf<EMMessage>()
 
@@ -36,6 +38,17 @@ class ChatPresenter(val view:ChatContract.View) :ChatContract.Presenter{
         //获取跟联系人的会话,然后标记会话里面的消息全部已读
         val conversation = EMClient.getInstance().chatManager().getConversation(username)
         conversation.markAllMessagesAsRead()
+    }
+
+
+    override fun loadMessages(username: String) {
+        doAsync {
+            val conversation = EMClient.getInstance().chatManager().getConversation(username)
+            messages.addAll(conversation.allMessages)
+            uiThread {
+                view.onMessageLoaded()
+            }
+        }
     }
 
 }

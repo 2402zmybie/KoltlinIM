@@ -21,6 +21,7 @@ import org.jetbrains.anko.toast
 
 class ChatActivity :BaseActivity(),ChatContract.View {
 
+
     lateinit var username:String
     val presenter = ChatPresenter(this)
 
@@ -43,6 +44,7 @@ class ChatActivity :BaseActivity(),ChatContract.View {
         initRecyclerView()
         EMClient.getInstance().chatManager().addMessageListener(messageListener)
         send.setOnClickListener { send() }
+        presenter.loadMessages(username)
     }
 
     private fun initRecyclerView() {
@@ -110,6 +112,13 @@ class ChatActivity :BaseActivity(),ChatContract.View {
         toast(getString(R.string.send_message_failed))
         recyclerView.adapter!!.notifyDataSetChanged()   //消息状态图片变为出错的
     }
+
+    override fun onMessageLoaded() {
+        scrollToBottom()
+        recyclerView.adapter!!.notifyDataSetChanged()
+    }
+
+
 
     override fun onDestroy() {
         super.onDestroy()
