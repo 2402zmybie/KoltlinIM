@@ -46,6 +46,12 @@ class ContactPersonFragment :BaseFragment(),ContactContract.View {
                 //重新获取联系人数据
                 presenter.loadContracts()
             }
+
+            override fun onContactAdded(p0: String?) {
+                //新增好友
+                //重新获取联系人数据
+                presenter.loadContracts()
+            }
         })
 
         slideBar.onSectionChangeListener = object :SlideBar.OnSectionChangeListener{
