@@ -8,6 +8,7 @@ import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import android.support.v4.app.TaskStackBuilder
 import cn.bmob.v3.Bmob
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMMessage
@@ -58,7 +59,10 @@ class IMApplication:Application() {
             }
             val intent = Intent(this,ChatActivity::class.java)
             intent.putExtra("username", it.conversationId())
-            val pendingInt = PendingIntent.getActivity(this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT)
+//            val pendingInt = PendingIntent.getActivity(this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val taskStackBuilder = TaskStackBuilder.create(this).addParentStack(ChatActivity::class.java).addNextIntent(intent)
+            val pendingInt = taskStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT)
             if(Build.VERSION.SDK_INT >= 26) {
                 //当sdk版本大于26
                 var id = "channel_1"
